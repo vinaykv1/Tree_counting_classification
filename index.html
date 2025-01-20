@@ -1,0 +1,444 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plant and Tree Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #83a4d4, #b6fbff);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        /* About Section */
+        #about {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+
+        #about h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        #about p {
+            line-height: 1.6;
+        }
+
+        /* Upload Section */
+        #upload {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+
+        #upload h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        #upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        #upload-form input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        #upload-form button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #upload-form button:hover {
+            background-color: #2980b9;
+        }
+
+        #preview-container {
+            margin-top: 20px;
+        }
+
+        #preview-container img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+        }
+
+        #loading {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin-right: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results Section */
+        #results {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+
+        #results h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        /* Styled Result Fields */
+        .result-field {
+            margin-bottom: 15px;
+        }
+
+        .result-field label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .result-field span {
+            display: block;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            color: #34495e;
+        }
+
+        /* Tree Summary Table */
+        .tree-summary {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .tree-summary th, .tree-summary td {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .tree-summary th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Download Button */
+        #download-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #download-btn:hover {
+            background-color: #27ae60;
+        }
+
+        /* Error Message Styling */
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+        }
+
+        footer p {
+            color: #555;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+
+            #about, #upload, #results {
+                padding: 15px;
+            }
+
+            .spinner {
+                width: 30px;
+                height: 30px;
+                border-width: 6px;
+            }
+
+            .tree-summary th, .tree-summary td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <h1>Plant and Tree Analyzer</h1>
+            <p>Upload an image to detect and classify plants or trees.</p>
+        </header>
+
+        <!-- About Section -->
+        <section id="about">
+            <h2>About This Project</h2>
+            <p>
+                This web application leverages advanced AI to analyze images of gardens, forests, parks, and more.
+                By uploading an image, our system will detect and classify the plants or trees present, providing
+                valuable insights and data for enthusiasts, researchers, and professionals.
+            </p>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="upload">
+            <h2>Upload Image</h2>
+            <form id="upload-form">
+                <input type="file" id="image-input" accept="image/*" required>
+                <button type="submit">Analyze Image</button>
+            </form>
+            <div id="preview-container">
+                <h3>Image Preview:</h3>
+                <img id="image-preview" src="#" alt="Image Preview" style="display: none;">
+            </div>
+            <div id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Processing your image...</p>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results">
+            <h2>Analysis Results</h2>
+            <div id="result-content">
+                <!-- Results will be displayed here -->
+            </div>
+            <button id="download-btn" style="display: none;">Download Results as TXT</button>
+        </section>
+
+        <!-- Footer Section -->
+        <footer>
+            <p>&copy; 2024 Plant and Tree Analyzer. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // static/script.js
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadForm = document.getElementById('upload-form');
+            const imageInput = document.getElementById('image-input');
+            const imagePreview = document.getElementById('image-preview');
+            const previewContainer = document.getElementById('preview-container');
+            const loading = document.getElementById('loading');
+            const resultContent = document.getElementById('result-content');
+            const downloadBtn = document.getElementById('download-btn');
+
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Clear previous results
+                resultContent.innerHTML = '';
+                downloadBtn.style.display = 'none';
+
+                const file = imageInput.files[0];
+                if (!file) {
+                    alert('Please select an image to upload.');
+                    return;
+                }
+
+                // Preview the image
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+
+                // Show loading animation
+                loading.style.display = 'flex';
+
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('image', file);
+
+                // Send the image to the Flask backend
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading animation
+                    loading.style.display = 'none';
+
+                    if (data.error) {
+                        resultContent.innerHTML = `<span class="error">${data.error}</span>`;
+                        return;
+                    }
+
+                    // Attempt to parse the JSON data
+                    let parsedData;
+                    try {
+                        parsedData = data;
+                        // Check if the required fields are present
+                        if (!parsedData.scene || typeof parsedData.total_trees !== 'number' || !Array.isArray(parsedData.tree_summary)) {
+                            throw new Error("Incomplete or invalid data structure");
+                        }
+                    } catch (error) {
+                        resultContent.innerHTML = `<span class="error">Error analyzing image. Please try again.</span>`;
+                        console.error('Parsing Error:', error);
+                        return;
+                    }
+
+                    // Display the structured results
+                    const sceneField = document.createElement('div');
+                    sceneField.className = 'result-field';
+                    sceneField.innerHTML = `<label>Scene:</label><span>${parsedData.scene}</span>`;
+
+                    const totalTreesField = document.createElement('div');
+                    totalTreesField.className = 'result-field';
+                    totalTreesField.innerHTML = `<label>Total Trees/Plants:</label><span>${parsedData.total_trees}</span>`;
+
+                    const treeSummaryField = document.createElement('div');
+                    treeSummaryField.className = 'result-field';
+                    treeSummaryField.innerHTML = `<label>Tree Summary:</label>`;
+
+                    const table = document.createElement('table');
+                    table.className = 'tree-summary';
+
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = `<tr><th>Type</th><th>Frequency</th></tr>`;
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement('tbody');
+
+                    parsedData.tree_summary.forEach(item => {
+                        const row = document.createElement('tr');
+                        const typeCell = document.createElement('td');
+                        typeCell.textContent = item.type;
+                        const freqCell = document.createElement('td');
+                        freqCell.textContent = item.frequency;
+                        row.appendChild(typeCell);
+                        row.appendChild(freqCell);
+                        tbody.appendChild(row);
+                    });
+
+                    table.appendChild(tbody);
+                    treeSummaryField.appendChild(table);
+
+                    // Append all fields to the result content
+                    resultContent.appendChild(sceneField);
+                    resultContent.appendChild(totalTreesField);
+                    resultContent.appendChild(treeSummaryField);
+
+                    // Show download button
+                    downloadBtn.style.display = 'inline-block';
+                    downloadBtn.onclick = function() {
+                        downloadResults(parsedData);
+                    };
+                })
+                .catch(error => {
+                    loading.style.display = 'none';
+                    resultContent.innerHTML = `<span class="error">Error analyzing image. Please try again.</span>`;
+                    console.error('Error:', error);
+                });
+            });
+
+            function downloadResults(data) {
+                fetch('/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to download results.');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create a link to download the blob
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'result.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    alert('Error downloading the file.');
+                    console.error('Download Error:', error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
